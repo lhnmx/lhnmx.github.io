@@ -30,30 +30,11 @@ body {
 
 /* ── Layout ── */
 .layout {
-  position: relative;
-  isolation: isolate;
   display: grid;
   grid-template-columns: 130px 1fr;
   max-width: 820px;
   margin: 0 auto;
-  padding: 180px 40px 140px;
-}
-
-.layout::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  top: 44px;
-  left: 40px;
-  right: 40px;
-  height: 112px;
-  background: url('images/CCT_Spring-Summer_2022_vFINAL1_Page_021_Image_0001_complete.jpg') center 82% / 100% auto no-repeat;
-  opacity: 0.16;
-  filter: saturate(0.55) contrast(1.05) brightness(1.08);
-  mix-blend-mode: darken;
-  -webkit-mask-image: radial-gradient(ellipse closest-side at center, #000 42%, rgba(0, 0, 0, 0.82) 68%, transparent 100%);
-  mask-image: radial-gradient(ellipse closest-side at center, #000 42%, rgba(0, 0, 0, 0.82) 68%, transparent 100%);
-  pointer-events: none;
+  padding: 88px 40px 140px;
 }
 
 /* ── Sidebar ── */
@@ -688,14 +669,7 @@ button.section-label {
 @media (max-width: 640px) {
   .layout {
     grid-template-columns: 1fr;
-    padding: 120px 24px 100px;
-  }
-
-  .layout::before {
-    top: 18px;
-    left: 24px;
-    right: 24px;
-    height: 84px;
+    padding: 48px 24px 100px;
   }
 
   .sidebar {
