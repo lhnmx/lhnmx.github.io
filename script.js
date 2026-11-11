@@ -43,16 +43,39 @@ function contributionText(count, dateString) {
   return `${count} contribution${count === 1 ? '' : 's'} on ${formatContributionDate(dateString)}`;
 }
 
+async function fetchGithubContributions() {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
+
+    try {
+      const res = await fetch('https://github-contributions-api.jogruber.de/v4/lhnmx?y=last', {
+        signal: controller.signal
+      });
+      if (!res.ok) throw new Error(`GitHub contribution request failed: ${res.status}`);
+
+      const data = await res.json();
+      if (!Array.isArray(data.contributions)) {
+        throw new Error('GitHub contribution response is missing daily activity');
+      }
+      return data.contributions;
+    } catch (error) {
+      if (attempt === 1) throw error;
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+}
+
 async function renderGithubContributions() {
   if (!contribEl) return;
 
   try {
-    const res = await fetch('https://github-contributions-api.jogruber.de/v4/lhnmx');
-    if (!res.ok) throw new Error('GitHub contribution data unavailable');
-
-    const data = await res.json();
+    const contributions = await fetchGithubContributions();
     const countsByDate = new Map(
-      data.contributions.map(day => [day.date, day.count])
+      contributions.map(day => [day.date, day.count])
     );
     const today = new Date();
     const start = new Date(today);
@@ -85,7 +108,8 @@ async function renderGithubContributions() {
     }
 
     contribEl.replaceChildren(grid);
-  } catch {
+  } catch (error) {
+    console.warn('Unable to load GitHub contributions', error);
     const fallback = document.createElement('p');
     fallback.className = 'github-contrib-status';
     fallback.textContent = 'github activity is temporarily unavailable';
