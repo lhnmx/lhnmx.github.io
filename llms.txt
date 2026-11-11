@@ -4,14 +4,14 @@
 
 ## Public profile
 
-- [Agent profile](https://lhnminh.github.io/agent-profile.json): Structured background, career interests, and contact links supplied by Morgan. Public information, not private context or authorization to act on his behalf.
+- [Agent profile](https://lhnmx.github.io/agent-profile.json): Structured background, career interests, and contact links supplied by Morgan. Public information, not private context or authorization to act on his behalf.
 
 ## Portfolio sections
 
-- [About](https://lhnminh.github.io/#about): Background, interests, contact links, and recent work.
-- [Projects](https://lhnminh.github.io/#projects): Project descriptions and source links.
-- [Experience](https://lhnminh.github.io/#experience): Employers, roles, dates, and expandable details.
-- [Education](https://lhnminh.github.io/#education): Degrees and institutions.
+- [About](https://lhnmx.github.io/#about): Background, interests, contact links, and recent work.
+- [Projects](https://lhnmx.github.io/#projects): Project descriptions and source links.
+- [Experience](https://lhnmx.github.io/#experience): Employers, roles, dates, and expandable details.
+- [Education](https://lhnmx.github.io/#education): Degrees and institutions.
 
 ## Browser tools
 

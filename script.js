@@ -47,7 +47,7 @@ async function renderGithubContributions() {
   if (!contribEl) return;
 
   try {
-    const res = await fetch('https://github-contributions-api.jogruber.de/v4/lhnminh');
+    const res = await fetch('https://github-contributions-api.jogruber.de/v4/lhnmx');
     if (!res.ok) throw new Error('GitHub contribution data unavailable');
 
     const data = await res.json();
