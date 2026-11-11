@@ -97,7 +97,7 @@ async function renderGithubContributions() {
 renderGithubContributions();
 
 const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.sidebar a');
+const navLinks = document.querySelectorAll('.section-nav a');
 
 function show(id, { updateHash = true, animate = true } = {}) {
   const update = () => {
@@ -105,7 +105,12 @@ function show(id, { updateHash = true, animate = true } = {}) {
       closeWriting();
     }
     sections.forEach(s => s.classList.toggle('active', s.id === id));
-    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+    navLinks.forEach(a => {
+      const active = a.getAttribute('href') === '#' + id;
+      a.classList.toggle('active', active);
+      if (active) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
     document.querySelector('.intro').classList.toggle('hidden', id !== 'about');
     if (updateHash) history.replaceState(null, '', '#' + id);
   };

@@ -49,7 +49,7 @@ body {
 .sidebar nav {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 0;
 }
 
 .sidebar a {
@@ -57,13 +57,55 @@ body {
   font-style: italic;
   color: var(--muted-text);
   text-decoration: none;
-  transition: color 0.2s;
-  display: block;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 calc(100% - 4px);
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition: color 0.2s, background-size 0.25s ease;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  min-height: 28px;
+  gap: 6px;
 }
 
 .sidebar a:hover,
+.sidebar a:focus-visible,
 .sidebar a.active {
   color: var(--ink);
+}
+
+.sidebar a:hover,
+.sidebar a:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* Section marker and contact links */
+.section-nav a {
+  position: relative;
+}
+
+.section-nav a.active::before {
+  content: '';
+  position: absolute;
+  left: -15px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
+.contact-nav {
+  margin-top: 24px;
+}
+
+.contact-nav span {
+  font-size: 10px;
+}
+
+.sidebar a:focus-visible {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
 }
 
 /* ── Main content ── */
@@ -512,29 +554,6 @@ button.section-label {
   line-height: 1.75;
 }
 
-/* ── About contact line ── */
-.about-contact {
-  font-size: 11px;
-  font-style: italic;
-  color: var(--muted-text);
-  margin-top: 20px;
-}
-
-.about-contact a {
-  color: var(--muted-text);
-  text-decoration: none;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 0% 1px;
-  transition: color 0.2s, background-size 0.25s ease;
-}
-
-.about-contact a:hover {
-  color: var(--ink);
-  background-size: 100% 1px;
-}
-
 /* ── About highlights ── */
 .about-highlights {
   display: grid;
@@ -683,7 +702,15 @@ button.section-label {
   .sidebar nav {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 18px;
+    column-gap: 20px;
+  }
+
+  .contact-nav {
+    margin-top: 8px;
+  }
+
+  .section-nav a.active::before {
+    display: none;
   }
 
   main {
