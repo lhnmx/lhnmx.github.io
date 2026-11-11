@@ -69,14 +69,14 @@ body {
   gap: 6px;
 }
 
-.sidebar a:hover,
+.contact-nav a:hover,
 .sidebar a:focus-visible,
 .sidebar a.active {
   color: var(--ink);
 }
 
-.sidebar a:hover,
-.sidebar a:focus-visible {
+.contact-nav a:hover,
+.contact-nav a:focus-visible {
   background-size: 100% 1px;
 }
 
