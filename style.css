@@ -69,7 +69,6 @@ body {
 /* ── Main content ── */
 main {
   padding-left: 56px;
-  border-left: 1px solid var(--rule);
 }
 
 /* ── Intro ── */
@@ -689,7 +688,6 @@ button.section-label {
 
   main {
     padding-left: 0;
-    border-left: none;
   }
 
   .local-time {
