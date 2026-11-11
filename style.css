@@ -71,7 +71,7 @@ body {
   gap: 0.375rem;
 }
 
-.contact-nav a:hover,
+.sidebar a:hover,
 .sidebar a:focus-visible,
 .sidebar a.active {
   color: var(--ink);
