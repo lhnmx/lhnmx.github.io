@@ -168,8 +168,8 @@ main {
   line-height: 1.35;
 }
 
-/* ── Lorenz Attractor ── */
-.lorenz-widget {
+/* ── Applied AI Spirit ── */
+.ai-spirit-widget {
   position: absolute;
   bottom: 0;
   right: 0;
@@ -178,16 +178,16 @@ main {
   align-items: flex-end;
   gap: 0.3125rem;
   user-select: none;
-  cursor: default;
+  cursor: pointer;
 }
 
-.lorenz-canvas {
-  width: 3.75rem;
-  height: 3.75rem;
+.ai-spirit-canvas {
+  width: 5.625rem;
+  height: 3.375rem;
   display: block;
 }
 
-.lorenz-caption {
+.ai-spirit-caption {
   font-size: 0.625rem;
   font-style: italic;
   color: var(--muted-text);
@@ -197,7 +197,7 @@ main {
   white-space: nowrap;
 }
 
-.lorenz-widget:hover .lorenz-caption {
+.ai-spirit-widget:hover .ai-spirit-caption {
   color: var(--ink);
 }
 
@@ -803,8 +803,8 @@ button.section-label {
     display: none;
   }
 
-  .lorenz-canvas {
-    width: 3rem;
+  .ai-spirit-canvas {
+    width: 4.75rem;
     height: 3rem;
   }
 
