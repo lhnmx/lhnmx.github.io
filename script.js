@@ -127,9 +127,9 @@ const sectionNav = document.getElementById('sectionNav');
 let currentDotPos = null;
 let navDotAnimId = null;
 
-// Spring physics parameters from directoryyy.com (stiffness: 200, damping: 24, mass: 1)
-const springK = 200;
-const springC = 24;
+// Spring physics parameters: snappy fast spring (~220ms settling)
+const springK = 520;
+const springC = 36;
 const springZeta = springC / (2 * Math.sqrt(springK));
 const springW0 = Math.sqrt(springK);
 const springWd = springW0 * Math.sqrt(1 - springZeta * springZeta);
@@ -179,14 +179,14 @@ function updateNavDot(targetId, { instant = false } = {}) {
     prevLink.classList.remove('recoil-left');
     void prevLink.offsetWidth;
     prevLink.classList.add('recoil-left');
-    setTimeout(() => prevLink.classList.remove('recoil-left'), 350);
+    setTimeout(() => prevLink.classList.remove('recoil-left'), 220);
   }
 
   if (navDotAnimId) cancelAnimationFrame(navDotAnimId);
 
   const startPos = { ...currentDotPos };
   const startTime = performance.now();
-  const duration = 0.46; // ~460ms for spring to settle
+  const duration = 0.24; // ~240ms fast spring
 
   function frame(now) {
     const elapsedSec = (now - startTime) / 1000;
@@ -227,7 +227,14 @@ if (document.fonts) {
   });
 }
 
+let activeViewTransition = null;
+
 function show(id, { updateHash = true, animate = true } = {}) {
+  const currentActive = document.querySelector('.section-nav a.active');
+  if (currentActive && currentActive.getAttribute('href') === '#' + id) {
+    return;
+  }
+
   const update = () => {
     if (id === 'writing') {
       closeWriting();
@@ -253,7 +260,20 @@ function show(id, { updateHash = true, animate = true } = {}) {
 
 function transition(update) {
   if (document.startViewTransition) {
-    document.startViewTransition(update);
+    if (activeViewTransition) {
+      try {
+        activeViewTransition.skipTransition();
+      } catch (err) {}
+      activeViewTransition = null;
+    }
+    try {
+      activeViewTransition = document.startViewTransition(update);
+      activeViewTransition.finished.finally(() => {
+        activeViewTransition = null;
+      });
+    } catch (err) {
+      update();
+    }
   } else {
     update();
   }
