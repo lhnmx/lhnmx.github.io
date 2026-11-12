@@ -361,3 +361,144 @@ document.querySelectorAll('.exp-item, .writing-item').forEach(card => {
     card.style.setProperty('--y', `${e.clientY - rect.top}px`);
   });
 });
+
+// Lorenz Attractor visualization
+(function initLorenz() {
+  const canvas = document.getElementById('lorenzCanvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const container = canvas.closest('.lorenz-widget') || canvas;
+
+  // Lorenz parameters (classic Edward Lorenz 1963 system)
+  const sigma = 10;
+  const rho = 28;
+  const beta = 8 / 3;
+  const dt = 0.009;
+
+  let x = 0.1, y = 0, z = 0;
+  const points = [];
+  const maxPoints = 320;
+
+  // Pre-warm the attractor simulation so it starts fully formed
+  for (let i = 0; i < 400; i++) {
+    const dx = sigma * (y - x) * dt;
+    const dy = (x * (rho - z) - y) * dt;
+    const dz = (x * y - beta * z) * dt;
+    x += dx;
+    y += dy;
+    z += dz;
+  }
+
+  let angleY = 0;
+  const angleX = 0.25;
+  let baseSpeed = 0.007;
+  let currentSpeed = baseSpeed;
+  let targetSpeed = baseSpeed;
+  let animId = null;
+
+  // Resize canvas for display pixel ratio
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = canvas.getBoundingClientRect();
+    const size = rect.width || 72;
+    canvas.width = Math.round(size * dpr);
+    canvas.height = Math.round(size * dpr);
+  }
+
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  // Interactive subtle speedup on hover
+  container.addEventListener('mouseenter', () => { targetSpeed = 0.016; });
+  container.addEventListener('mouseleave', () => { targetSpeed = baseSpeed; });
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function stepSimulation() {
+    for (let i = 0; i < 2; i++) {
+      const dx = sigma * (y - x) * dt;
+      const dy = (x * (rho - z) - y) * dt;
+      const dz = (x * y - beta * z) * dt;
+      x += dx;
+      y += dy;
+      z += dz;
+      points.push({ x, y, z });
+      if (points.length > maxPoints) points.shift();
+    }
+  }
+
+  function renderFrame() {
+    currentSpeed += (targetSpeed - currentSpeed) * 0.08;
+    angleY += currentSpeed;
+
+    stepSimulation();
+
+    const w = canvas.width;
+    const h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const cx = w / 2;
+    const cy = h / 2;
+    const scale = (w / 72) * 1.22;
+
+    ctx.lineWidth = Math.max(1, (w / 72) * 0.65);
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+
+    const cosY = Math.cos(angleY);
+    const sinY = Math.sin(angleY);
+    const cosX = Math.cos(angleX);
+    const sinX = Math.sin(angleX);
+
+    for (let i = 1; i < points.length; i++) {
+      const p1 = points[i - 1];
+      const p2 = points[i];
+
+      // Rotate around Y
+      const p1x = p1.x * cosY - (p1.z - 25) * sinY;
+      const p1z = p1.x * sinY + (p1.z - 25) * cosY;
+      const p2x = p2.x * cosY - (p2.z - 25) * sinY;
+      const p2z = p2.x * sinY + (p2.z - 25) * cosY;
+
+      // Rotate slightly around X
+      const p1y = p1.y * cosX - p1z * sinX;
+      const p2y = p2.y * cosX - p2z * sinX;
+
+      const s1x = cx + p1x * scale;
+      const s1y = cy + p1y * scale;
+      const s2x = cx + p2x * scale;
+      const s2y = cy + p2y * scale;
+
+      const progress = i / points.length;
+      const alpha = 0.06 + progress * 0.78;
+      ctx.strokeStyle = `rgba(47, 45, 41, ${alpha.toFixed(3)})`;
+
+      ctx.beginPath();
+      ctx.moveTo(s1x, s1y);
+      ctx.lineTo(s2x, s2y);
+      ctx.stroke();
+    }
+
+    if (!prefersReducedMotion) {
+      animId = requestAnimationFrame(renderFrame);
+    }
+  }
+
+  // Draw first frame
+  renderFrame();
+
+  // Pause when tab is hidden to save resources
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (animId) {
+        cancelAnimationFrame(animId);
+        animId = null;
+      }
+    } else if (!prefersReducedMotion && !animId) {
+      animId = requestAnimationFrame(renderFrame);
+    }
+  });
+})();

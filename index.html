@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=section-hover">
+  <link rel="stylesheet" href="style.css?v=lorenz-align">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-QQCHC7Y9TC"></script>
   <script>
@@ -58,6 +58,10 @@
         <div>
           <h1>Morgan Le</h1>
           <p class="subtitle">Applied AI &amp; Data Science &middot; New York</p>
+        </div>
+        <div class="lorenz-widget" id="lorenzWidget" aria-label="Lorenz attractor dynamical system visualization">
+          <canvas class="lorenz-canvas" id="lorenzCanvas" width="180" height="180" aria-hidden="true"></canvas>
+          <span class="lorenz-caption">dx/dt &middot; lorenz</span>
         </div>
       </div>
 
@@ -279,7 +283,7 @@
   <div class="local-time" id="timeText"></div>
 
 
-  <script src="script.js?v=lhnmx-contributions-2"></script>
+  <script src="script.js?v=lorenz"></script>
 
 </body>
 </html>
