@@ -83,18 +83,39 @@ body {
 }
 
 /* Section marker and contact links */
+.section-nav {
+  position: relative;
+}
+
 .section-nav a {
   position: relative;
 }
 
 .section-nav a.active::before {
-  content: '';
+  display: none;
+}
+
+.moving-nav-dot {
   position: absolute;
-  left: -0.9375rem;
   width: 0.3125rem;
   height: 0.3125rem;
   border-radius: 50%;
   background: var(--ink);
+  pointer-events: none;
+  z-index: 2;
+  will-change: transform;
+  top: 0;
+  left: 0;
+}
+
+@keyframes linkRecoilLeft {
+  0%   { transform: translateX(0); }
+  30%  { transform: translateX(-0.1875rem); }
+  100% { transform: translateX(0); }
+}
+
+.recoil-left {
+  animation: linkRecoilLeft 0.34s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .contact-nav {
@@ -753,7 +774,8 @@ button.section-label {
     margin-top: 0.5rem;
   }
 
-  .section-nav a.active::before {
+  .section-nav a.active::before,
+  .moving-nav-dot {
     display: none;
   }
 

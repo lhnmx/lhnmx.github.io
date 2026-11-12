@@ -122,6 +122,110 @@ renderGithubContributions();
 
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.section-nav a');
+const navDot = document.getElementById('navDot');
+const sectionNav = document.getElementById('sectionNav');
+let currentDotPos = null;
+let navDotAnimId = null;
+
+// Spring physics parameters from directoryyy.com (stiffness: 200, damping: 24, mass: 1)
+const springK = 200;
+const springC = 24;
+const springZeta = springC / (2 * Math.sqrt(springK));
+const springW0 = Math.sqrt(springK);
+const springWd = springW0 * Math.sqrt(1 - springZeta * springZeta);
+const springDecay = springZeta * springW0;
+
+function springProgress(t) {
+  if (t <= 0) return 0;
+  return 1 - Math.exp(-springDecay * t) * (Math.cos(springWd * t) + (springDecay / springWd) * Math.sin(springWd * t));
+}
+
+function getNavDotTarget(activeLink) {
+  if (!activeLink || !sectionNav || !navDot) return null;
+  const navRect = sectionNav.getBoundingClientRect();
+  const linkRect = activeLink.getBoundingClientRect();
+  const dotSize = navDot.offsetWidth || 5;
+
+  const y = (linkRect.top - navRect.top) + (linkRect.height - dotSize) / 2;
+  // Positioned on the left of text matching the original -0.9375rem active dot
+  const x = (linkRect.left - navRect.left) - 15;
+  return { x, y };
+}
+
+function updateNavDot(targetId, { instant = false } = {}) {
+  if (!navDot || !sectionNav) return;
+
+  const targetLink = Array.from(navLinks).find(a => a.getAttribute('href') === '#' + targetId);
+  if (!targetLink) return;
+
+  const endPos = getNavDotTarget(targetLink);
+  if (!endPos) return;
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (instant || !currentDotPos || prefersReducedMotion) {
+    if (navDotAnimId) {
+      cancelAnimationFrame(navDotAnimId);
+      navDotAnimId = null;
+    }
+    currentDotPos = { ...endPos };
+    navDot.style.transform = `translate3d(${endPos.x}px, ${endPos.y}px, 0)`;
+    return;
+  }
+
+  // Find previous link to trigger subtle recoil
+  const prevLink = Array.from(navLinks).find(a => a !== targetLink && Math.abs((getNavDotTarget(a)?.y ?? -999) - currentDotPos.y) < 6);
+  if (prevLink) {
+    prevLink.classList.remove('recoil-left');
+    void prevLink.offsetWidth;
+    prevLink.classList.add('recoil-left');
+    setTimeout(() => prevLink.classList.remove('recoil-left'), 350);
+  }
+
+  if (navDotAnimId) cancelAnimationFrame(navDotAnimId);
+
+  const startPos = { ...currentDotPos };
+  const startTime = performance.now();
+  const duration = 0.46; // ~460ms for spring to settle
+
+  function frame(now) {
+    const elapsedSec = (now - startTime) / 1000;
+    const progress = springProgress(elapsedSec);
+
+    const curX = startPos.x + (endPos.x - startPos.x) * progress;
+    const curY = startPos.y + (endPos.y - startPos.y) * progress;
+    currentDotPos = { x: curX, y: curY };
+    navDot.style.transform = `translate3d(${curX}px, ${curY}px, 0)`;
+
+    if (elapsedSec < duration) {
+      navDotAnimId = requestAnimationFrame(frame);
+    } else {
+      currentDotPos = { ...endPos };
+      navDot.style.transform = `translate3d(${endPos.x}px, ${endPos.y}px, 0)`;
+      navDotAnimId = null;
+    }
+  }
+
+  navDotAnimId = requestAnimationFrame(frame);
+}
+
+window.addEventListener('resize', () => {
+  const activeLink = document.querySelector('.section-nav a.active');
+  if (activeLink) {
+    const id = activeLink.getAttribute('href').slice(1);
+    updateNavDot(id, { instant: true });
+  }
+});
+
+if (document.fonts) {
+  document.fonts.ready.then(() => {
+    const activeLink = document.querySelector('.section-nav a.active');
+    if (activeLink) {
+      const id = activeLink.getAttribute('href').slice(1);
+      updateNavDot(id, { instant: true });
+    }
+  });
+}
 
 function show(id, { updateHash = true, animate = true } = {}) {
   const update = () => {
@@ -136,6 +240,7 @@ function show(id, { updateHash = true, animate = true } = {}) {
       else a.removeAttribute('aria-current');
     });
     document.querySelector('.intro').classList.toggle('hidden', id !== 'about');
+    updateNavDot(id, { instant: !animate });
     if (updateHash) history.replaceState(null, '', '#' + id);
   };
 
