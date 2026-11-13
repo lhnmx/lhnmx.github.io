@@ -688,15 +688,15 @@ button.section-label {
   height: 0.5625rem;
   border-radius: 0.125rem;
   border: 1px solid rgba(var(--glow-rgb), 0.12);
-  background: #d2c4b2;
+  background: #e4dcd0;
   cursor: default;
   transition: transform 0.15s ease, outline-color 0.15s ease;
 }
 
-.github-contrib-day[data-level="1"] { background: #a99172; }
-.github-contrib-day[data-level="2"] { background: #83684b; }
-.github-contrib-day[data-level="3"] { background: #65482f; }
-.github-contrib-day[data-level="4"] { background: #3f2c1d; }
+.github-contrib-day[data-level="1"] { background: #c2d7be; }
+.github-contrib-day[data-level="2"] { background: #8fad8c; }
+.github-contrib-day[data-level="3"] { background: #577d56; }
+.github-contrib-day[data-level="4"] { background: #2b4f2c; }
 
 .github-contrib-day:hover,
 .github-contrib-day:focus {
